@@ -7,11 +7,7 @@ module.exports = bot.command("search", async (ctx) => {
 
     let user = await User.findOne({ chat_id: ctx.chat.id });
 
-    if (
-      user.status == "waiting" ||
-      user.status == "active" ||
-      ctx.message.text == "/next"
-    ) {
+    if (user.status == "active") {
       await User.findOneAndUpdate(
         { chat_id: user.chat_id },
         { status: "waiting" }
