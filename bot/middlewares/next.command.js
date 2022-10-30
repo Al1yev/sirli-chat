@@ -21,7 +21,7 @@ module.exports = bot.command("next", async (ctx) => {
     User.findOneAndUpdate(
       { chat_id: user.partner },
       {
-        status: "waiting",
+        status: "active",
         partner: null,
       }
     )
@@ -32,7 +32,18 @@ module.exports = bot.command("next", async (ctx) => {
 
     // -------------------------------------------------------------------------
 
+    await bot.api.sendMessage(
+      user.partner,
+      "<b>Sizning suhbatdoshingiz suhbatni to'xtatdi</b> \n\n /search - Yangi suhbatdosh topish uchun",
+      { parse_mode: "HTML" }
+    );
+
+    await ctx.reply("<b>Suhbat to'xtatildi</b>", {
+      parse_mode: "HTML",
+    });
+
     // Finding partner to chat for user
+
     await ctx.reply("<b>Suhbatdosh qidirilmoqda . . .</b>", {
       parse_mode: "HTML",
     });
@@ -41,7 +52,7 @@ module.exports = bot.command("next", async (ctx) => {
       try {
         data = (await User.findOne({ chat_id: user.chat_id })).partner;
         // console.log(data);
-        if (!data) {
+        if (data) {
           await ctx.reply(
             "<b>Suhbatdosh topildi</b> \n\n/next - boshqa suhbatdoshga o'tish; \n/stop - suhbatni to'xtatish;",
             { parse_mode: "HTML" }
