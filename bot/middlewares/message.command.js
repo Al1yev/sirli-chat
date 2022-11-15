@@ -11,10 +11,23 @@ module.exports = bot.on("message", async (ctx) => {
         ctx.update.message.message_id
       );
     } else {
-      await ctx.reply(
-        "<b>Sizda hozirda faol chat mavjud emas!</b> \n\n/search - Suhbatdosh qidirishi uchun",
-        { parse_mode: "HTML" }
-      );
+      try {
+        await ctx.reply(
+          "<b>Sizda hozirda faol chat mavjud emas!</b> \n\n/search - Suhbatdosh qidirishi uchun",
+          { parse_mode: "HTML" }
+        );
+      } catch (err) {
+        if (err.error_code == 403) {
+          User.findOneAndUpdate(
+            { chat_id: user.chat_id },
+            { status: "inactive" }
+          )
+            .then((res) => {})
+            .catch((err) => {
+              console.error(err);
+            });
+        }
+      }
     }
   } catch (error) {
     console.error(error);

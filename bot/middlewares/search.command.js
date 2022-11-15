@@ -18,21 +18,38 @@ module.exports = bot.command("search", async (ctx) => {
       await ctx.reply("<b>Suhbatdosh qidirilmoqda . . .</b>", {
         parse_mode: "HTML",
       });
+      let data;
 
       setTimeout(async () => {
-        await ctx.reply(
-          "<b>Suhbatdosh topilmadi!</b> \n\nYana bir bor urinib ko'ring",
-          { parse_mode: "HTML" }
-        );
-        User.findOneAndUpdate({ chat_id: user.chat_id }, { status: "active" })
-          .then((res) => {})
-          .catch((err) => {
-            console.error(err);
-          });
-        clearInterval(findPartner);
+        if (!data) {
+          try {
+            await ctx.reply(
+              "<b>Suhbatdosh topilmadi!</b>\n\nAyni paytda bot foydalanuvchilari soni kamligi tufayli sizga suhbatdosh topilmadi. Noqulaylikar uchun uzr so'raymiz!\n<i>Botimzning foydalanuvchilari sonini oshirishga yordam bersangiz juda minnador bo'lar edik</i>",
+              { parse_mode: "HTML" }
+            );
+            await ctx.reply("<b>Yana bir bor urinib ko'ring!</b>", {
+              parse_mode: "HTML",
+            });
+          } catch (err) {
+            if (err.error_code == 403) {
+              User.findOneAndUpdate(
+                { chat_id: user.chat_id },
+                { status: "inactive" }
+              )
+                .then((res) => {})
+                .catch((err) => {
+                  console.error(err);
+                });
+            }
+          }
+          User.findOneAndUpdate({ chat_id: user.chat_id }, { status: "active" })
+            .then((res) => {})
+            .catch((err) => {
+              console.error(err);
+            });
+          clearInterval(findPartner);
+        }
       }, 60000);
-
-      let data;
 
       const findPartner = setInterval(async () => {
         // --------------------------------------------------------------------------

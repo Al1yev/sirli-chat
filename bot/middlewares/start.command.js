@@ -14,7 +14,10 @@ module.exports = bot.command("start", async (ctx) => {
       user = await User.create(data);
       if (!user) console.error("User not created");
     }
-    ctx.reply(`<b>Salom ${user.first_name} bacham</b>`, { parse_mode: "HTML" });
+    ctx.reply(
+      `<b>Salom ${user.first_name}!</b> \nChat Botga xush kelibsiz.\nSuhbatdan rohatlaning!`,
+      { parse_mode: "HTML" }
+    );
   } catch (err) {
     console.error(err);
   }
